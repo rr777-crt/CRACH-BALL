@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Шарики - Полная версия</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Главное меню -->
+    <div id="mainMenu">
+        <h1 class="menuTitle">Шарики</h1>
+        <div class="menuButtons">
+            <button class="menuBtn" id="playBtn">Играть</button>
+            <button class="menuBtn" id="shopBtn">Магазин</button>
+            <button class="menuBtn" id="inventoryBtn">Инвентарь</button>
+            <button class="menuBtn" id="achievementsBtn">Достижения</button>
+        </div>
+    </div>
+    
+    <!-- Игровой экран -->
+    <div id="gameScreen">
+        <div id="gameHeader">
+            <div id="gameStats">
+                <div id="score">Очки: 0</div>
+                <div id="lives">Жизни: 3</div>
+                <div id="time">Время: 0</div>
+                <div id="speed">Скорость: 100%</div>
+            </div>
+            <button id="backBtn">В меню</button>
+        </div>
+        <div id="gameArea">
+            <div id="player"></div>
+            <button id="abilityBtn">Способность</button>
+        </div>
+    </div>
+    
+    <!-- Магазин -->
+    <div id="shopScreen">
+        <h2 class="shopTitle">Магазин</h2>
+        <div class="totalPoints">Всего очков: <span id="totalPoints">0</span></div>
+        
+        <div class="shopSection">
+            <h3 class="sectionTitle">Коробки</h3>
+            <div class="itemsGrid">
+                <div class="shopItem" id="buyBox">
+                    <div class="itemName">Коробка</div>
+                    <div class="itemPrice">500 очков</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="shopSection">
+            <h3 class="sectionTitle">Скины</h3>
+            <div class="itemsGrid">
+                <div class="shopItem" data-skin="red">
+                    <div class="itemName">Красный</div>
+                    <div class="itemPrice">100 очков</div>
+                </div>
+                <div class="shopItem" data-skin="green">
+                    <div class="itemName">Зелёный</div>
+                    <div class="itemPrice">120 очков</div>
+                </div>
+                <div class="shopItem" data-skin="purple">
+                    <div class="itemName">Фиолетовый</div>
+                    <div class="itemPrice">140 очков</div>
+                </div>
+                <div class="shopItem" data-skin="yellow">
+                    <div class="itemName">Жёлтый</div>
+                    <div class="itemPrice">160 очков</div>
+                </div>
+                <div class="shopItem" data-skin="rainbow">
+                    <div class="itemName">Радужный</div>
+                    <div class="itemPrice">250 очков</div>
+                </div>
+            </div>
+        </div>
+        
+        <button id="shopBackBtn" class="menuBtn" style="background: #ff6b6b; margin-top: 20px;">Назад</button>
+    </div>
+    
+    <!-- Инвентарь -->
+    <div id="inventoryScreen">
+        <h2 class="inventoryTitle">Инвентарь</h2>
+        
+        <div class="inventorySection">
+            <h3 class="sectionTitle">Скины</h3>
+            <div class="inventoryGrid" id="skinsGrid">
+                <!-- Скины будут добавляться динамически -->
+            </div>
+        </div>
+        
+        <div class="inventorySection">
+            <h3 class="sectionTitle">Способности</h3>
+            <div class="inventoryGrid" id="abilitiesGrid">
+                <!-- Способности будут добавляться динамически -->
+            </div>
+        </div>
+        
+        <button id="inventoryBackBtn" class="menuBtn" style="background: #ff6b6b; margin-top: 20px;">Назад</button>
+    </div>
+    
+    <!-- Достижения -->
+    <div id="achievementsScreen">
+        <h2 class="achievementsTitle">Достижения</h2>
+        <div class="achievementsList" id="achievementsList">
+            <!-- Достижения будут добавляться динамически -->
+        </div>
+        <button id="achievementsBackBtn" class="menuBtn" style="background: #ff6b6b; margin-top: 20px;">Назад</button>
+    </div>
+    
+    <!-- Конец игры -->
+    <div id="gameOver">
+        <h2 class="gameOverTitle">Игра окончена!</h2>
+        <div class="gameOverStats">
+            <div>Ваш счет: <span id="finalScore">0</span></div>
+            <div>Собрано шаров: <span id="ballsCollected">0</span></div>
+        </div>
+        <div class="gameOverButtons">
+            <button class="gameOverBtn" id="restartBtn">Играть снова</button>
+            <button class="gameOverBtn" id="menuBtn">В меню</button>
+        </div>
+    </div>
+    
+    <!-- Уведомление -->
+    <div class="notification" id="notification"></div>
+
+    <script src="js/main.js"></script>
+</body>
+</html>
