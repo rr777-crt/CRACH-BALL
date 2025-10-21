@@ -48,6 +48,19 @@ window.addEventListener('load', () => {
     initAchievements();
     updateInventory();
     startMenuBalls();
+    
+    // Предотвращение стандартного поведения касания
+    document.addEventListener('touchstart', function(e) {
+        if (e.touches.length > 1) {
+            e.preventDefault();
+        }
+    }, { passive: false });
+    
+    document.addEventListener('touchend', function(e) {
+        if (e.touches.length > 0) {
+            e.preventDefault();
+        }
+    }, { passive: false });
 });
 
 // Элементы DOM
@@ -231,11 +244,21 @@ function updateSkinsInventory() {
                 <div class="itemName">${skin.name}</div>
             `;
             item.style.background = getSkinColor(skin.id);
+            
+            // Добавляем обработчики для touch устройств
             item.addEventListener('click', () => {
                 gameState.currentSkin = skin.id;
                 saveGameState();
                 updateInventory();
             });
+            
+            item.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                gameState.currentSkin = skin.id;
+                saveGameState();
+                updateInventory();
+            });
+            
             skinsGrid.appendChild(item);
         }
     });
@@ -272,21 +295,38 @@ function updateAbilitiesInventory() {
                 }
             });
             
+            // Обработчик touch для экипировки
+            item.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                gameState.equippedAbility = gameState.equippedAbility === ability.id ? null : ability.id;
+                saveGameState();
+                updateInventory();
+            });
+            
             // Обработчик зажатия для улучшения
             let pressTimer;
-            item.addEventListener('mousedown', () => {
+            const startPress = () => {
                 pressTimer = setTimeout(() => {
                     upgradeAbility(ability.id);
                 }, 1500);
+            };
+            
+            const endPress = () => {
+                clearTimeout(pressTimer);
+            };
+            
+            item.addEventListener('mousedown', startPress);
+            item.addEventListener('mouseup', endPress);
+            item.addEventListener('mouseleave', endPress);
+            
+            // Touch события для улучшения
+            item.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                startPress();
             });
             
-            item.addEventListener('mouseup', () => {
-                clearTimeout(pressTimer);
-            });
-            
-            item.addEventListener('mouseleave', () => {
-                clearTimeout(pressTimer);
-            });
+            item.addEventListener('touchend', endPress);
+            item.addEventListener('touchcancel', endPress);
             
             abilitiesGrid.appendChild(item);
         }
@@ -461,6 +501,10 @@ let ballCreationInterval;
 let gameTimerInterval;
 let gameLoopId;
 
+// Переменные для управления касанием
+let isTouching = false;
+let touchId = null;
+
 function startGame() {
     // Останавливаем все предыдущие интервалы
     stopAllIntervals();
@@ -480,6 +524,10 @@ function startGame() {
         goldBallsCollected: 0
     };
     lastMeteorTime = 0;
+    
+    // Сброс состояния касания
+    isTouching = false;
+    touchId = null;
     
     player = document.getElementById('player');
     abilityBtn = document.getElementById('abilityBtn');
@@ -508,6 +556,9 @@ function startGame() {
     
     // Скрытие кнопки способности
     abilityBtn.style.display = 'none';
+    
+    // Добавляем обработчики событий для управления
+    setupControls();
     
     // Запуск игрового цикла
     gameLoopId = requestAnimationFrame(gameLoop);
@@ -546,6 +597,100 @@ function startGame() {
             }
         }
     }, 1000);
+}
+
+// Настройка управления для десктопа и мобильных устройств
+function setupControls() {
+    const gameArea = document.getElementById('gameArea');
+    
+    // Очищаем предыдущие обработчики
+    gameArea.removeEventListener('mousemove', handleMouseMove);
+    gameArea.removeEventListener('touchmove', handleTouchMove);
+    gameArea.removeEventListener('touchstart', handleTouchStart);
+    gameArea.removeEventListener('touchend', handleTouchEnd);
+    
+    // Обработчики для мыши
+    gameArea.addEventListener('mousemove', handleMouseMove);
+    
+    // Обработчики для касаний
+    gameArea.addEventListener('touchmove', handleTouchMove, { passive: false });
+    gameArea.addEventListener('touchstart', handleTouchStart, { passive: false });
+    gameArea.addEventListener('touchend', handleTouchEnd, { passive: false });
+    
+    // Обработчик для кнопки способности
+    abilityBtn.addEventListener('click', useAbility);
+    abilityBtn.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        useAbility();
+    }, { passive: false });
+}
+
+function handleMouseMove(e) {
+    if (!gameActive) return;
+    
+    const playerSize = player.offsetWidth;
+    let x = e.clientX - playerSize / 2;
+    let y = e.clientY - playerSize / 2;
+    
+    // Ограничиваем движение в пределах экрана
+    if (x < 0) x = 0;
+    if (x > window.innerWidth - playerSize) x = window.innerWidth - playerSize;
+    if (y < 0) y = 0;
+    if (y > window.innerHeight - playerSize) y = window.innerHeight - playerSize;
+    
+    player.style.left = x + 'px';
+    player.style.top = y + 'px';
+}
+
+function handleTouchStart(e) {
+    if (!gameActive) return;
+    
+    e.preventDefault();
+    if (!isTouching) {
+        isTouching = true;
+        touchId = e.changedTouches[0].identifier;
+        handleTouchMove(e);
+    }
+}
+
+function handleTouchMove(e) {
+    if (!gameActive || !isTouching) return;
+    
+    e.preventDefault();
+    
+    // Находим касание с нашим ID
+    for (let i = 0; i < e.changedTouches.length; i++) {
+        const touch = e.changedTouches[i];
+        if (touch.identifier === touchId) {
+            const playerSize = player.offsetWidth;
+            const rect = gameArea.getBoundingClientRect();
+            let x = touch.clientX - rect.left - playerSize / 2;
+            let y = touch.clientY - rect.top - playerSize / 2;
+            
+            // Ограничиваем движение в пределах игровой области
+            if (x < 0) x = 0;
+            if (x > gameArea.offsetWidth - playerSize) x = gameArea.offsetWidth - playerSize;
+            if (y < 0) y = 0;
+            if (y > gameArea.offsetHeight - playerSize) y = gameArea.offsetHeight - playerSize;
+            
+            player.style.left = x + 'px';
+            player.style.top = y + 'px';
+            break;
+        }
+    }
+}
+
+function handleTouchEnd(e) {
+    if (!gameActive) return;
+    
+    e.preventDefault();
+    for (let i = 0; i < e.changedTouches.length; i++) {
+        if (e.changedTouches[i].identifier === touchId) {
+            isTouching = false;
+            touchId = null;
+            break;
+        }
+    }
 }
 
 function stopAllIntervals() {
@@ -824,27 +969,7 @@ function checkCollision(obj1, obj2) {
              rect1.top > rect2.bottom);
 }
 
-// Управление игроком
-document.addEventListener('mousemove', (e) => {
-    if (!gameActive) return;
-    
-    const playerSize = player.offsetWidth;
-    let x = e.clientX - playerSize / 2;
-    let y = e.clientY - playerSize / 2;
-    
-    // Ограничиваем движение в пределах экрана
-    if (x < 0) x = 0;
-    if (x > window.innerWidth - playerSize) x = window.innerWidth - playerSize;
-    if (y < 0) y = 0;
-    if (y > window.innerHeight - playerSize) y = window.innerHeight - playerSize;
-    
-    player.style.left = x + 'px';
-    player.style.top = y + 'px';
-});
-
 // Использование способности
-
-
 function useAbility() {
     if (!gameActive || !gameState.equippedAbility || abilityCooldown > 0) return;
     
@@ -859,7 +984,6 @@ function useAbility() {
         immortal: 50,
         resurrection: 60
     };
-    abilityBtn.addEventListener('click', useAbility);
     
     abilityCooldown = baseCooldowns[ability] - (level - 1) * 0.5;
     abilityBtn.style.display = 'none';
@@ -985,4 +1109,12 @@ function gameOver() {
 document.getElementById('restartBtn').addEventListener('click', () => {
     gameOverScreen.style.display = 'none';
     startGame();
+});
+
+// Добавляем обработчики touch для кнопок меню
+document.querySelectorAll('.menuBtn, .gameOverBtn, #backBtn, #shopBackBtn, #inventoryBackBtn, #achievementsBackBtn').forEach(btn => {
+    btn.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        btn.click();
+    }, { passive: false });
 });
