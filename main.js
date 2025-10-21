@@ -843,7 +843,7 @@ document.addEventListener('mousemove', (e) => {
 });
 
 // Использование способности
-abilityBtn.addEventListener('click', useAbility);
+
 
 function useAbility() {
     if (!gameActive || !gameState.equippedAbility || abilityCooldown > 0) return;
@@ -859,6 +859,7 @@ function useAbility() {
         immortal: 50,
         resurrection: 60
     };
+    abilityBtn.addEventListener('click', useAbility);
     
     abilityCooldown = baseCooldowns[ability] - (level - 1) * 0.5;
     abilityBtn.style.display = 'none';
