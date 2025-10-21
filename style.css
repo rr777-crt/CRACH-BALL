@@ -55,21 +55,33 @@ body {
 #playBtn {
     background: #ffd43b; /* Желтый */
 }
+#playBtn:hover{
+      background: #122020b; 
+}
 
 #shopBtn {
     background: #51cf66; /* Зеленый */
+}
+#shopBtn:hover{
+      background: #922000b; 
 }
 
 #inventoryBtn {
     background: #cc5de8; /* Фиолетовый */
 }
+#inventoryBtn:hover{
+      background: #ff5b2b; 
+}
 
 #achievementsBtn {
     background: #fcc419; /* Золотой */
 }
+#achivementsBtn:hover{
+      background: #111111b; 
+}
 
 .menuBtn:hover {
-    transform: translateY(-3px);
+    transform: translateY(-5px);
     box-shadow: 0 5px 15px rgba(0,0,0,0.2);
 }
 
