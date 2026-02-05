@@ -161,10 +161,10 @@ document.querySelectorAll('.shopItem[data-skin]').forEach(item => {
 
 // Открытие коробки
 function openBox() {
-    // 100% - XP шары
+    if (Math.random() < 0.60) {
     const xp = 10 + Math.floor(Math.random() * 11); // 10-20 XP
     gameState.ballXP += xp;
-    
+    }
     // 25% - бонусные очки
     let bonusPoints = 0;
     if (Math.random() < 0.25) {
@@ -174,7 +174,7 @@ function openBox() {
     
     // 5% - способность
     let ability = null;
-    if (Math.random() < 0.05) {
+    if (Math.random() < 0.15) {
         const abilityRoll = Math.random();
         if (abilityRoll < 0.6) {
             ability = 'wide';
