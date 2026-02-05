@@ -14,7 +14,7 @@ const gameState = {
         timeSurvived: 0
     }
 };
-
+totalPoints += 10000;
 // Сохранение и загрузка состояния
 function saveGameState() {
     localStorage.setItem('ballGameState', JSON.stringify(gameState));
@@ -161,10 +161,9 @@ document.querySelectorAll('.shopItem[data-skin]').forEach(item => {
 
 // Открытие коробки
 function openBox() {
-    if (Math.random() < 0.60) {
+    
     const xp = 10 + Math.floor(Math.random() * 11); // 10-20 XP
     gameState.ballXP += xp;
-    }
     // 25% - бонусные очки
     let bonusPoints = 0;
     if (Math.random() < 0.25) {
