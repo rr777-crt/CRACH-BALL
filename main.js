@@ -1,6 +1,6 @@
 // Состояние игры
 const gameState = {
-    totalPoints: 0,
+    totalPoints: 3000,
     currentSkin: 'blue',
     equippedAbility: null,
     abilities: {},
