@@ -120,8 +120,8 @@ function updateTotalPointsDisplay() {
 
 // Магазин - покупка коробки
 document.getElementById('buyBox').addEventListener('click', () => {
-    if (gameState.totalPoints >= 100) {
-        gameState.totalPoints -= 100;
+    if (gameState.totalPoints >= 1) {
+        gameState.totalPoints -= 0;
         updateTotalPointsDisplay();
         saveGameState();
         
